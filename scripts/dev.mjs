@@ -1,5 +1,6 @@
 import { connect } from "node:net";
 import { spawn, spawnSync } from "node:child_process";
+import { Connection } from "@temporalio/client";
 
 const compose = spawnSync("docker", ["compose", "up", "-d", "temporal"], {
   stdio: "inherit",
@@ -27,15 +28,30 @@ async function waitForPort(port, timeoutMs = 60_000) {
 }
 
 await waitForPort(7233);
+// A listening TCP socket does not guarantee Temporal is ready for requests.
+const connection = await Connection.connect({ address: "127.0.0.1:7233" });
+await connection.workflowService.getSystemInfo({});
+await connection.close();
 const children = [
-  spawn("npm", ["run", "dev:worker"], { stdio: "inherit" }),
-  spawn("npm", ["run", "dev:api"], { stdio: "inherit" }),
+  spawn(process.execPath, ["--import", "tsx", "src/worker.ts"], { stdio: "inherit" }),
+  spawn(process.execPath, ["--import", "tsx", "src/api.ts"], { stdio: "inherit" }),
 ];
 let shuttingDown = false;
-function shutdown(exitCode = 0) {
+async function shutdown(exitCode = 0) {
   if (shuttingDown) return;
   shuttingDown = true;
-  for (const child of children) child.kill("SIGTERM");
+  const stopped = children.map((child) => new Promise((resolve) => {
+    if (child.exitCode !== null || child.signalCode !== null) return resolve();
+    child.once("exit", resolve);
+    child.kill("SIGTERM");
+  }));
+  await Promise.race([
+    Promise.all(stopped),
+    new Promise((resolve) => setTimeout(resolve, 5000)),
+  ]);
+  for (const child of children) {
+    if (child.exitCode === null && child.signalCode === null) child.kill("SIGKILL");
+  }
   process.exit(exitCode);
 }
 process.on("SIGINT", () => shutdown(0));
@@ -48,7 +64,6 @@ for (const child of children) {
     }
   });
 }
-console.log("\nStarter is launching:");
+console.log("\nJuniper Salon is launching (local prototype):");
 console.log("  App:         http://localhost:3000");
 console.log("  Temporal UI: http://localhost:8233\n");
-

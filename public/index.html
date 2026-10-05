@@ -3,31 +3,73 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Temporal assessment starter</title>
+    <meta name="theme-color" content="#244d41" />
+    <title>Juniper · The waitlist, taken care of</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <main>
-      <p class="eyebrow">Temporal assessment starter</p>
-      <h1>Your environment is connected.</h1>
-      <p class="intro">
-        This neutral demonstration starts a Workflow, waits durably for a
-        Signal, and then completes. Replace it with the experience your
-        customer needs.
-      </p>
-      <section class="card">
-        <h2 id="phase">Ready</h2>
-        <p id="message">Start the demonstration to verify the setup.</p>
-        <button id="start">Start demo Workflow</button>
-        <button id="continue" hidden>Send continue Signal</button>
-        <p class="request-id" id="request-id"></p>
-      </section>
-      <p class="footer">
-        Inspect the execution at
-        <a href="http://localhost:8233" target="_blank">localhost:8233</a>.
-      </p>
-    </main>
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="Juniper home">Juniper<span class="brand-sub">SALON</span></a>
+      <nav aria-label="Main navigation">
+        <button class="nav-item active" data-view="openings">Openings <span class="nav-count" id="nav-active">0</span></button>
+        <button class="nav-item" data-view="waitlist">Waitlist <span class="nav-count" id="nav-waitlist">0</span></button>
+        <button class="nav-item" data-view="guide">Guide</button>
+      </nav>
+      <div class="staff-profile"><div><strong>Lena & Carla</strong><span>Phoenix, Arizona</span></div></div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar"><span class="breadcrumb">Juniper <span>/</span> <strong id="breadcrumb-page">Opening board</strong></span><span class="demo-badge">Prototype · simulated texts</span></header>
+      <main>
+        <div class="connection-banner" id="connection-banner" role="status" hidden>Reconnecting to the front desk… Existing offers keep their original deadlines.</div>
+        <section id="view-openings" class="view">
+          <div class="page-heading"><div><p class="eyebrow" id="today-label">JUNIPER SALON</p><h1>Openings</h1><p class="lede">The next eligible client gets the next offer.</p></div></div>
+          <div class="stats-row" aria-label="Opening summary"><div class="stat"><strong id="stat-active">0</strong><span>in progress</span></div><div class="stat"><strong id="stat-filled">0</strong><span>filled</span></div><div class="stat"><strong id="stat-waitlist">0</strong><span>on the waitlist</span></div></div>
+          <div class="board-layout">
+            <section class="board-section" aria-labelledby="board-title">
+              <div class="section-heading"><h2 id="board-title">Opening board <span id="opening-count">0</span></h2><div class="live-label"><span></span><span id="sync-label">Connecting</span></div></div>
+              <div id="openings-list"></div>
+            </section>
+            <aside class="new-opening panel">
+              <div class="panel-heading"><h2>New opening</h2></div>
+              <form id="opening-form">
+                <label for="opening-service">Service</label><select id="opening-service" name="service" required><option>Cut & finish</option><option>Color refresh</option><option>Blowout</option></select>
+                <label for="opening-stylist">Stylist</label><select id="opening-stylist" name="stylist" required><option>Lena</option><option>Carla</option></select>
+                <div class="form-row"><div><label for="opening-date">Date · Phoenix</label><input id="opening-date" name="date" type="date" required /></div><div><label for="opening-time">Time · Phoenix</label><input id="opening-time" name="time" type="time" value="14:00" required /></div></div>
+                <div class="form-row"><div><label for="opening-duration">Duration</label><select id="opening-duration" name="duration"><option value="30">30 minutes</option><option value="45">45 minutes</option><option value="60" selected>60 minutes</option><option value="90">90 minutes</option><option value="120">120 minutes</option></select></div><div><label for="opening-window">Reply window</label><select id="opening-window" name="window"><option value="900">Standard · 15 minutes</option><option value="20">Demo · 20 sec, open hours</option></select></div></div>
+                <div class="match-preview" id="match-preview">Checking the waitlist.</div>
+                <p class="form-error" id="opening-error" role="alert" hidden></p>
+                <button class="button primary full" type="submit" id="create-opening-button">Start offers</button>
+                <p class="form-footnote">Contact hours: Tue–Sat, 9 AM–6 PM Phoenix. Demo mode treats the salon as open.</p>
+              </form>
+              <div class="integration-note"><p>Texts are simulated. Add accepted appointments to Square manually.</p></div>
+            </aside>
+          </div>
+        </section>
+        <section id="view-waitlist" class="view" hidden>
+          <div class="page-heading"><div><h1>Waitlist</h1><p class="lede">Oldest matching requests go first.</p></div><button class="button primary" id="add-client-button">Add client</button></div>
+          <div class="notice"><p>Fictional clients. Saved in this browser. Opt-outs apply immediately; other edits apply to new openings.</p></div>
+          <section class="panel waitlist-panel"><div class="section-heading"><h2>Clients <span id="waitlist-count">0</span></h2><span class="subtle">Oldest requests first</span></div><div id="waitlist-table"></div></section>
+        </section>
+        <section id="view-guide" class="view" hidden>
+          <div class="page-heading"><div><h1>Guide</h1><p class="lede">A manual waitlist, with automatic follow-up.</p></div></div>
+          <section class="panel guide-detail">
+            <h2>Offering an opening</h2>
+            <p>Enter the service, stylist and time. Clients must match the service, required stylist and full appointment window. The oldest eligible request gets the first offer.</p>
+            <p>Each offer lasts 15 minutes. A decline or timeout advances the queue. An acceptance fills the opening; staff then update Square. Late and duplicate replies cannot claim it.</p>
+            <h2>Staff controls</h2>
+            <p>Cancel an opening to withdraw its offer. If delivery fails, retry or skip the client. Opting out ends a pending offer and stops future texts. Declining or timing out keeps the client on the waitlist.</p>
+            <h2>Hours and recovery</h2>
+            <p>Outreach runs Tuesday–Saturday, 9 AM–6 PM Phoenix. Outside hours, it waits until reopening. Outreach stops at the appointment start. Restarting the worker preserves the current client and original deadline.</p>
+            <h2>Testing the prototype</h2>
+            <p>Choose “Demo” for 20-second offers and simulated open hours. Expand “Preview offer & test a reply” to accept, decline or opt out. Past offers stay available for late-reply testing. Edit a client to simulate a failed text.</p>
+            <p class="guide-boundary">No real texts are sent. Square updates and waitlist entry are manual.</p>
+          </section>
+        </section>
+        <footer class="page-footer"><span>Juniper Salon</span><span>Local prototype</span></footer>
+      </main>
+    </div>
+    <dialog id="client-dialog" aria-labelledby="client-dialog-title"><form id="client-form"><div class="dialog-heading"><div><h2 id="client-dialog-title">Add client</h2></div><button type="button" class="icon-button" id="close-client-dialog" aria-label="Close client form">Close</button></div><input id="client-id" type="hidden" /><div class="form-row"><div><label for="client-name">Client name</label><input id="client-name" required maxlength="80" autocomplete="name" /></div><div><label for="client-mobile">Mobile</label><input id="client-mobile" required maxlength="30" type="tel" autocomplete="tel" placeholder="+1 415 555 0100" /></div></div><div class="form-row"><div><label for="client-service">Requested service</label><select id="client-service"><option>Cut & finish</option><option>Color refresh</option><option>Blowout</option></select></div><div><label for="client-stylist">Stylist preference</label><select id="client-stylist"><option value="">Any stylist</option><option>Lena</option><option>Carla</option></select></div></div><label for="client-from">Available from · Phoenix time</label><input id="client-from" type="datetime-local" required /><label for="client-until">Available until · Phoenix time</label><input id="client-until" type="datetime-local" required /><label for="client-joined">Joined the waitlist · Phoenix time</label><input id="client-joined" type="datetime-local" required /><label class="checkbox-label"><input id="client-optedout" type="checkbox" /><span>Opted out of text messages <small>This client will not receive an offer.</small></span></label><label class="checkbox-label"><input id="client-failure" type="checkbox" /><span>Simulate the first text failing <small>Demo only. Staff can retry or skip this offer.</small></span></label><p class="form-error" id="client-error" role="alert" hidden></p><div class="dialog-actions"><button class="button secondary" type="button" id="cancel-client-dialog">Cancel</button><button class="button primary" type="submit">Save client</button></div></form></dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
     <script src="/app.js"></script>
   </body>
 </html>
-

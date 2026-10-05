@@ -1,0 +1,21 @@
+{
+  "verifiedAt": "2026-10-05T19:25:59.062Z",
+  "preparedAt": "2026-10-05T19:16:25.997Z",
+  "workflowId": "opening-5be6ed7769bf9c04ede16a68",
+  "originalOfferId": "opening-5be6ed7769bf9c04ede16a68:offer:1",
+  "originalDeadline": "2026-10-05T19:31:25.867Z",
+  "recoveredDeadline": "2026-10-05T19:31:25.867Z",
+  "checks": [
+    "exact duplicate stylist/start rejected with 409",
+    "original offer ID preserved",
+    "original sentAt preserved",
+    "original deadline preserved",
+    "persisted delivery receipt reused",
+    "no duplicate offer created by worker replay",
+    "decline after restart advances automatically",
+    "simultaneous HTTP accepts yield one 200 and one 409",
+    "late first-client acceptance yields 409",
+    "exactly one accepted offer and manual Square reminder"
+  ],
+  "passed": true
+}
